@@ -2,7 +2,6 @@
 
 cd ../../.. || exit
 SAPIENS_CHECKPOINT_ROOT=/home/${USER}/sapiens_lite_host
-SAPIENS_CHECKPOINT_ROOT=/home/lucas/code/feedback/pose/sapiens_lite_host/sapiens-pose-coco/sapiens_lite_host/ # TODO: delete
 
 MODE='torchscript' ## original. no optimizations (slow). full precision inference.
 # MODE='bfloat16' ## A100 gpus. faster inference at bfloat16
@@ -11,7 +10,6 @@ SAPIENS_CHECKPOINT_ROOT=$SAPIENS_CHECKPOINT_ROOT/$MODE
 
 #----------------------------set your input and output directories----------------------------------------------
 INPUT='../pose/demo/data/itw_videos/video.mp4'
-INPUT="/storage/lucas/datasets/qevd/QEVD-FIT-300k-Part-1/00009766.mp4"
 OUTPUT="/home/${USER}/Desktop/sapiens/pose/Outputs/vis/itw_videos/video"
 
 #--------------------------MODEL CARD---------------
