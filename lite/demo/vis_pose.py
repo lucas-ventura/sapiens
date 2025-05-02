@@ -19,6 +19,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from adhoc_image_dataset import AdhocImageDataset
+from adhoc_video_dataset import AdhocVideoDataset
 from classes_and_palettes import (
     COCO_KPTS_COLORS,
     COCO_SKELETON_INFO,
@@ -364,6 +365,9 @@ def main():
             for image_name in sorted(os.listdir(input_dir))
             if image_name.endswith(".jpg") or image_name.endswith(".png")
         ]
+        inference_dataset = AdhocImageDataset(
+            [os.path.join(input_dir, img_name) for img_name in image_names],
+        )  # do not provide preprocess args for detector as we use mmdet
     elif os.path.isfile(input) and input.endswith(".txt"):
         # If the input is a text file, read the paths from it and set input_dir to the directory of the first image
         with open(input, "r") as file:
@@ -374,11 +378,15 @@ def main():
         input_dir = (
             os.path.dirname(image_paths[0]) if image_paths else ""
         )  # Use the directory of the first image path
+        inference_dataset = AdhocImageDataset(
+            [os.path.join(input_dir, img_name) for img_name in image_names],
+        )  # do not provide preprocess args for detector as we use mmdet
+    elif os.path.isfile(input) and input.endswith(".mp4"):
+        input_dir = os.path.dirname(input)
+        inference_dataset = AdhocVideoDataset(input)
+        image_names = list(range(len(inference_dataset)))
 
     scale = args.heatmap_scale
-    inference_dataset = AdhocImageDataset(
-        [os.path.join(input_dir, img_name) for img_name in image_names],
-    )  # do not provide preprocess args for detector as we use mmdet
     inference_dataloader = torch.utils.data.DataLoader(
         inference_dataset,
         batch_size=args.batch_size,
